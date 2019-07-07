@@ -22,3 +22,4 @@ def mmp(votes, parties, constituencies, seats):
     seatsFilled = 0
     partySeats = dict()
     while seatsFilled < seats:
+        continue
