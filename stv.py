@@ -1,4 +1,5 @@
 import operator, math
+import sys
 
 def stv(votes, seats, candidates): 
     # votes is a list of lists where each of the list is the order of preference for each voter, 
@@ -30,6 +31,11 @@ def stv(votes, seats, candidates):
             if(preferential_votes[candidate] >= quota):
                 elected_candidates.add(candidate)
                 toRedistribute.add(candidate)
+        if(len(toRedistribute) == 0):
+            lowestCandidate = lowest_voted_candidate(pref_count)
+            toRedistribute.add(lowestCandidate)
+        votes = redistribute_votes(roundCount, toRedistribute)
+        
 
     return elected_candidates
 
@@ -53,3 +59,28 @@ def pref_count(votes):
             candidateCount[vote[0]].append(vote)
 
     return candidateCount
+
+# given a dictionary where key is candidate and value being number of votes
+# return the candidate with the least votes
+def lowest_voted_candidate(prefCount):
+    lowestCandidate = ""
+    lowestVotes = float('inf')
+    for candidate, votes in prefCount.items():
+        if votes < lowestVotes:
+            lowestCandidate = candidate
+            lowestVotes = votes
+
+    return lowestCandidate
+
+#takes in the raw votes of each candidate and removes the first item before bundling them all back up together
+def redistribute_votes(allVotes, toRedistribute):
+    totalVotes = list()
+    for candidate, votes in allVotes.items():
+        if candidate in toRedistribute:
+            for vote in votes:
+                totalVotes.append(vote.pop())
+        else:
+            for vote in votes:
+                totalVotes.append(vote)
+
+    return totalVotes
