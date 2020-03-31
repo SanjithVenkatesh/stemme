@@ -19,7 +19,24 @@ def mmp(votes, parties, constituencies, seats):
     for const in constituencyVote:
         winningCandidate = max(const.items(), key=operator.itemgetter(1))[0]
         constWins.append(winningCandidate)
-    seatsFilled = 0
     partySeats = dict()
-    while seatsFilled < seats:
-        continue
+    numOfConst  = len(constWins)
+    seatsFilled = 0
+    for winner in constWins:
+        if winner not in partySeats:
+            partySeats[winner] = 1
+        else:
+            partySeats[winner] += 1
+        seatsFilled += 1
+    percentageOfSeats = {party : partySeats[party]/numOfConst for party in partySeats.keys()}
+    deservedPartyPercentage = {party: partyVote[x]/len(votes) for party in partyVote}
+    imbalence = dict()
+    for party in deservedPartyPercentage:
+        if party not in percentageOfSeats:
+            imbalence[party] = deservedPartyPercentage[party]
+        else:
+            imbalence[party] = deservedPartyPercentage[party] - percentageOfSeats[party]
+    for party in 
+
+
+        
