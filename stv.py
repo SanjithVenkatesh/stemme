@@ -1,5 +1,6 @@
 import operator, math
 import sys
+import random
 
 def stv(votes, seats, candidates): 
     # votes is a list of lists where each of the list is the order of preference for each voter, 
@@ -106,10 +107,26 @@ def countFinalPrefVote(elected, seats, pref_votes):
     for cand in badCands:
         toCompare[cand] = pref_votes[cand]
     print("toCompare: ", toCompare)
-    finalCand = max(toCompare.items(), key=operator.itemgetter(1))[0]
-    goodCands.append(finalCand)
+    finalCand = ""
+    if allValuesSame(toCompare):
+        finalCand = random.choice(list(toCompare.keys()))
+        goodCands.append(finalCand)
+    else:
+        sortedKeys = sorted(toCompare, key=lambda key: toCompare[key])
+        sortedKeys.reverse()
+        print("sortedKeys: ", sortedKeys)
+        for i in range(0,seats-len(goodCands)):
+            goodCands.append(sortedKeys[i])
     print("SELECTED CANDIDATES: ", goodCands)
     return goodCands
+
+def allValuesSame(d):
+    uniqueValues = set()
+    for k, v in d.items():
+        uniqueValues.add(v)
+        if len(uniqueValues) == 2:
+            return False
+    return True
 
 # distributes the votes for each of their first preferential count
 # in candidateCount, key is the candidate's name and the value is a list of the votes where the first value is the candidate's name
@@ -173,8 +190,8 @@ def turnVotesIntoLists(votes):
 
 if __name__ == "__main__":
     print()
-    votes = [["A", "B", "C"], ["B", "C"], ["B", "C", "A"], ["B"], ["A", "C"], ["C", "B", "A"], ["D", "B", "A"]]
+    votes = [["A", "B", "C"], ["B", "C"], ["B", "C", "A"], ["B"], ["A", "C"], ["C", "B", "A"], ["D", "B", "A"], ["D", "C"], ["B", "D"]]
     candidates = ["A", "B", "C", "D"]
-    seats = 1
+    seats = 3
     print()
     print(stv(votes,seats, candidates))
