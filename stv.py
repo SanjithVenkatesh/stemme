@@ -1,8 +1,15 @@
+
+"""Usage:
+  stv.py  [--debug | -d]
+  stv.py -h | --help
+"""
+
 import operator, math
 import sys
 import random
+from docopt import docopt
 
-def stv(votes, seats, candidates): 
+def stv(votes, seats, candidates, args): 
     # votes is a list of lists where each of the list is the order of preference for each voter, 
     # seats is an int representing the number of seats to fill
     # candidates is a list of all of the candidates standing for the election
@@ -20,6 +27,9 @@ def stv(votes, seats, candidates):
     elected_candidates = list()
     preferential_votes = dict()
     round = 1
+    debug = False
+    if args["-d"] or args["--debug"]:
+        debug = True
     totalCandidates = candidates
     for i in candidates:
         preferential_votes[i] = 0
@@ -29,37 +39,43 @@ def stv(votes, seats, candidates):
             valid_votes.append(vote)
     votes = valid_votes
     quota = calculate_quota(len(votes), seats)
-    print("quota is ", quota)
+    if debug:
+        print("quota is ", quota)
 
     while(len(elected_candidates) < seats):
-        print()
-        print("ROUND: ", round)
-        print("elected candidates: ", elected_candidates)
-        print("pref_votes: ", preferential_votes)
-        print("Candidates in round: ", candidates)
+        if debug:
+            print()
+            print("ROUND: ", round)
+            print("elected candidates: ", elected_candidates)
+            print("pref_votes: ", preferential_votes)
+            print("Candidates in round: ", candidates)
         toRedistribute = list()
         roundCount = pref_count(votes)
-        print("roundCount = ", roundCount)
+        if debug:
+            print("roundCount = ", roundCount)
         for candidate, votes in roundCount.items():
             if candidate in candidates:
                 preferential_votes[candidate] += len(votes)
-            print("Pref_count after counting pref_count function: ", preferential_votes)
+            if debug:
+                print("Pref_count after counting pref_count function: ", preferential_votes)
             if(preferential_votes[candidate] >= quota):
-                print("Candidate ", candidate, " has reached quota")
+                if debug:
+                    print("Candidate ", candidate, " has reached quota")
                 elected_candidates.append((candidate, round))
                 toRedistribute.append(candidate)
         if(len(toRedistribute) == 0):
             lowestCandidate = lowest_voted_candidate(preferential_votes)
-            print("Candidate to be dropped: ", lowestCandidate)
+            if debug:
+                print("Candidate to be dropped: ", lowestCandidate)
             toRedistribute.append(lowestCandidate)
         if(len(elected_candidates) > seats):
-            return countFinalPrefVote(elected_candidates, seats, preferential_votes)
+            return countFinalPrefVote(elected_candidates, seats, preferential_votes, debug=debug)
         newVars = redistribute_votes(roundCount, toRedistribute, candidates)
         votes = turnVotesIntoLists(newVars[0])
         candidates = newVars[1]
-        print("votes after redistribution: ", votes)
+        if debug:
+            print("votes after redistribution: ", votes)
         round += 1
-        print()
         
 
     return elected_candidates
@@ -70,17 +86,20 @@ def calculate_quota(validVotesCast, seatsToFill):
 def calculate_transfer_votes(secondPrefVotes, originalVotes, surplusVotes):
     return math.floor((secondPrefVotes/originalVotes)*surplusVotes)
 
-def countFinalPrefVote(elected, seats, pref_votes):
-    print()
-    print("IN countFinalPrefVote!")
-    print(elected)
+def countFinalPrefVote(elected, seats, pref_votes, debug):
+    if debug:
+        print()
+        print("In countFinalPrefVote!")
+        print(elected)
     firstTime = dict()
     for candRound in elected:
         if candRound[0] not in firstTime:
             firstTime[candRound[0]] = candRound[1]
-    print(firstTime)
+    if debug:
+        print(firstTime)
     sortedVote = sorted(firstTime.items(), key=lambda x: x[1])
-    print(sortedVote)
+    if debug:
+        print(sortedVote)
     uniqueValues = set()
     selectedCandidates = list()
     selectedCandidatesRound = list()
@@ -89,7 +108,8 @@ def countFinalPrefVote(elected, seats, pref_votes):
         if(len(uniqueValues) <= seats):
             selectedCandidates.append(candVote[0])
             selectedCandidatesRound.append((candVote[0], candVote[1]))
-    print("SCR: ",selectedCandidatesRound)
+    if debug:
+        print("SCR: ",selectedCandidatesRound)
     if(len(selectedCandidates) == seats):
         print("SKIPPED FINAL FILTER!")
         return selectedCandidates
@@ -97,16 +117,15 @@ def countFinalPrefVote(elected, seats, pref_votes):
     goodCands = list()
     badCands = list()
     for cand in selectedCandidatesRound:
-        print(cand)
         if(cand[1] == highestRound):
             badCands.append(cand[0])
         else:
             goodCands.append(cand[0])
-    print("SCR after filter: ", goodCands)
+    if debug:
+        print("SCR after filter: ", goodCands)
     toCompare = dict()
     for cand in badCands:
         toCompare[cand] = pref_votes[cand]
-    print("toCompare: ", toCompare)
     finalCand = ""
     if allValuesSame(toCompare):
         finalCand = random.choice(list(toCompare.keys()))
@@ -114,10 +133,8 @@ def countFinalPrefVote(elected, seats, pref_votes):
     else:
         sortedKeys = sorted(toCompare, key=lambda key: toCompare[key])
         sortedKeys.reverse()
-        print("sortedKeys: ", sortedKeys)
         for i in range(0,seats-len(goodCands)):
             goodCands.append(sortedKeys[i])
-    print("SELECTED CANDIDATES: ", goodCands)
     return goodCands
 
 def allValuesSame(d):
@@ -135,12 +152,9 @@ def pref_count(votes):
     
 
     for vote in votes:
-        print("candidateCount = ", candidateCount)
-        print("vote in pref_count = ", vote)
         if len(vote) == 0:
             continue
         if vote[0] not in candidateCount:
-            print("in vote not in candidate count: ", vote[0])
             candidateCount[vote[0]] = []
             candidateCount[vote[0]] = [vote]
         else:
@@ -162,9 +176,6 @@ def lowest_voted_candidate(pc):
 
 #takes in the raw votes of each candidate and removes the first item before bundling them all back up together
 def redistribute_votes(allVotes, toRedistribute, candidates):
-    print("allVotes in redistribute: ", allVotes)
-    print("toRedistribute in redistribute: ", toRedistribute)
-    print("candidates in redistribute: ", candidates)
     totalVotes = list()
     newCandidates = list()
     for candidate, votes in allVotes.items():
@@ -189,9 +200,8 @@ def turnVotesIntoLists(votes):
 
 
 if __name__ == "__main__":
-    print()
+    args = docopt(__doc__, version='0.1.1rc')
     votes = [["A", "B", "C"], ["B", "C"], ["B", "C", "A"], ["B"], ["A", "C"], ["C", "B", "A"], ["D", "B", "A"], ["D", "C"], ["B", "D"]]
     candidates = ["A", "B", "C", "D"]
     seats = 3
-    print()
-    print(stv(votes,seats, candidates))
+    print(stv(votes,seats, candidates, args))
