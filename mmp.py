@@ -1,7 +1,4 @@
 import operator
 
-def mmp(votes, parties, seats):
-    return "lol"
-
-if __name__ == "__main__":
-    votes = [{"constituency": ""}]
+def mmp(votes, parties, seats, combined_party_lists, constituency_votes):
+    return []
