@@ -11,7 +11,6 @@ def test_mmp():
     grune_list = create_list("g", seats)
     afd_list = create_list("afd", seats)
     linke_list = create_list("linke", seats)
-    print(spd_list)
 
     SPD = Party(spd_list, "SPD")
     Grune = Party(grune_list, "Grune")
@@ -31,7 +30,6 @@ def test_mmp():
     grune_candidates = Grune.generate_candidates()
     afd_candidates = AFD.generate_candidates()
     linke_candidates = Linke.generate_candidates()
-    print(spd_candidates)
 
     # Five constituencies
     berlin = { spd_candidates[0]: 40, grune_candidates[0]: 30, linke_candidates[0]: 35, union_candidates[0]: 20, afd_candidates[0]: 5} # SPD winner
@@ -42,7 +40,7 @@ def test_mmp():
 
     constituency_votes = [berlin, saxony, bavaria, frankfurt, baden]
 
-    candidates_elected = ["spd1", "spd2", "u1", "u2", "u3", "u4", "u5", "g1", "g2", "afd1"]
+    candidates_elected = ["spd1", "spd2", "u1", "u2", "u3", "u4", "u5", "g1", "g2", "afd1"].sort()
 
     mmp_winners = mmp(party_vote, parties, 10, constituency_votes)
 
