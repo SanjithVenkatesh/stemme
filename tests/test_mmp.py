@@ -1,4 +1,4 @@
-from mmp import mmp, Candidate, Party
+from methods.mmp import mmp, Candidate, Party
 
 
 def test_mmp():
