@@ -19,5 +19,5 @@ def dHondt(
         votesTemp[highestParty] = int(
             votes[highestParty] / (1 + partySeats[highestParty])
         )
-        
+
     return partySeats

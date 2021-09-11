@@ -9,7 +9,7 @@ import random
 from docopt import docopt
 
 
-def stv(votes, seats, candidates, args):
+def stv(votes, seats, candidates, args=None):
     # votes is a list of lists where each of the list is the order of preference for each voter,
     # seats is an int representing the number of seats to fill
     # candidates is a list of all of the candidates standing for the election
@@ -28,7 +28,7 @@ def stv(votes, seats, candidates, args):
     preferential_votes = dict()
     round = 1
     debug = False
-    if args["-d"] or args["--debug"]:
+    if args and (args["-d"] or args["--debug"]):
         debug = True
     totalCandidates = candidates
     for i in candidates:
@@ -190,8 +190,22 @@ def redistribute_votes(allVotes, toRedistribute, candidates):
     newCandidates = list()
     for candidate, votes in allVotes.items():
         if candidate in toRedistribute:
+            type_of_vote_count = {}
             for vote in votes:
-                totalVotes.append(vote.pop())
+                tu_vote = tuple(vote)
+                if tu_vote not in type_of_vote_count:
+                    type_of_vote_count[tu_vote] = 1
+                else:
+                    type_of_vote_count[tu_vote] += 1
+            type_of_vote_count_trim = {}
+            for vote, count in type_of_vote_count.items():
+                vote = list(vote)
+                vote.pop(0)
+                vote = tuple(vote)
+                type_of_vote_count_trim[vote] = count
+            for vote, count in type_of_vote_count_trim.items():
+                for _ in range(0, count):
+                    totalVotes.append(list(vote))
         else:
             for vote in votes:
                 totalVotes.append(vote)
@@ -208,6 +222,19 @@ def turnVotesIntoLists(votes):
         else:
             listVotes.append(vote)
     return listVotes
+
+
+def unique_votes(votes):
+    tup = []
+    for vote in votes:
+        vote = tuple(vote)
+        tup.append(vote)
+    lst = list(set(tup))
+    unq = []
+    for l in lst:
+        unq.append(list(l))
+    print(unq)
+    return unq
 
 
 if __name__ == "__main__":
