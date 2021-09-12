@@ -14,7 +14,7 @@ class dHondt(Election):
         self.votes = dict()
         self.input = input
         self.seats = seats
-        self.votes = self.load_votes()
+        self.load_votes()
 
     # Arg is a new party with their party vote
     def add_vote(self, party: str, votes: int):
@@ -27,27 +27,27 @@ class dHondt(Election):
     # Returns a dictionary where the key is the party, value is the vote count
     def load_votes(self):
         if type(self.input) == dict:
-            return self.input
+            self.votes = self.input
         elif type(self.input) == str:
-            return self.load_votes_file()
+            self.load_votes_file()
         else:
             raise InvalidInputError
 
 
     # Read all of the votes from the Excel sheet
     # Ideally, the party is in the first column, the votes in the second column
+    # Returns nothing, simply calls the add_vote function
     def load_votes_file(self):
         vote_df = pd.read_csv(self.input)
-        votes = dict()
+        columns = vote_df.columns
+        if "Party" not in columns or "Votes" not in columns:
+            raise InvalidCSVFileError
         for _, row in vote_df.iterrows():
-            if not row['Party'] or not row['Votes']:
-                raise InvalidCSVFileError
             try:
                 self.add_vote(row['Party'], row['Votes'])
             except PartyInElectionError:
                 # TODO: Implement logging system and add error message to queue
                 pass
-        return votes
 
     
     def calculate_winners(self):
