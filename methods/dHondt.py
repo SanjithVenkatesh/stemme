@@ -1,23 +1,68 @@
 import operator
 import copy
+import pandas as pd
+from election import Election
+from errors import PartyInElectionError, InvalidCSVFileError, InvalidInputError
+
+class dHondt(Election):
+    
+    # Init function for creating dHondt object
+    # Unique args is the seats arg to get how many seats available in assembly, Excel file where the votes are
+    # Input can be either a direct dict object or a CSV file that contains the values
+    def __init__(self, name: str, seats: int, input):
+        super().__init__(name)
+        self.votes = dict()
+        self.input = input
+        self.seats = seats
+        self.votes = self.load_votes()
+
+    # Arg is a new party with their party vote
+    def add_vote(self, party: str, votes: int):
+        if party in self.votes:
+            raise PartyInElectionError
+        self.votes[party] = votes
+    
+    
+    # TODO: Have this work for a database import, ideally should be a different method
+    # Returns a dictionary where the key is the party, value is the vote count
+    def load_votes(self):
+        if type(self.input) == dict:
+            return self.input
+        elif type(self.input) == str:
+            return self.load_votes_file()
+        else:
+            raise InvalidInputError
 
 
-def dHondt(
-    seats, votes
-):  # seats is an integer representing number of seats available, votes is a dictionary with key being party, value being number of votes received
+    # Read all of the votes from the Excel sheet
+    # Ideally, the party is in the first column, the votes in the second column
+    def load_votes_file(self):
+        vote_df = pd.read_csv(self.input)
+        votes = dict()
+        for _, row in vote_df.iterrows():
+            if not row['Party'] or not row['Votes']:
+                raise InvalidCSVFileError
+            try:
+                self.add_vote(row['Party'], row['Votes'])
+            except PartyInElectionError:
+                # TODO: Implement logging system and add error message to queue
+                pass
+        return votes
 
-    # Do a deep copy of the votes into a new variable to track the weight of each party
-    votesTemp = copy.deepcopy(votes)
-    parties = votes.keys()
-    partySeats = {x: 0 for x in parties}
+    
+    def calculate_winners(self):
+        # Do a deep copy of the votes into a new variable to track the weight of each party
+        votesTemp = copy.deepcopy(self.votes)
+        parties = self.votes.keys()
+        partySeats = {x: 0 for x in parties}
 
-    # Loop through each seat and get which party gets that next seat
-    # Calculate what the new weight of the party that won that seat
-    for i in range(0, seats):
-        highestParty = max(votesTemp.items(), key=operator.itemgetter(1))[0]
-        partySeats[highestParty] += 1
-        votesTemp[highestParty] = int(
-            votes[highestParty] / (1 + partySeats[highestParty])
-        )
+        # Loop through each seat and get which party gets that next seat
+        # Calculate what the new weight of the party that won that seat
+        for i in range(0, self.seats):
+            highestParty = max(votesTemp.items(), key=operator.itemgetter(1))[0]
+            partySeats[highestParty] += 1
+            votesTemp[highestParty] = int(
+                self.votes[highestParty] / (1 + partySeats[highestParty])
+            )
 
-    return partySeats
+        return partySeats
