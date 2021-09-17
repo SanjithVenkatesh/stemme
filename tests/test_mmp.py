@@ -1,4 +1,5 @@
-from methods.mmp import mmp, Candidate, Party
+from methods.mmp import MMP
+from methods.base import Party, create_list
 
 
 def test_mmp():
@@ -12,11 +13,11 @@ def test_mmp():
     afd_list = create_list("afd", seats)
     linke_list = create_list("linke", seats)
 
-    SPD = Party(spd_list, "SPD")
-    Grune = Party(grune_list, "Grune")
-    Union = Party(union_list, "Union")
-    AFD = Party(afd_list, "AFD")
-    Linke = Party(linke_list, "Linke")
+    SPD = Party(spd_list, "SPD", 250)
+    Grune = Party(grune_list, "Grune", 150)
+    Union = Party(union_list, "Union", 550)
+    AFD = Party(afd_list, "AFD", 90)
+    Linke = Party(linke_list, "Linke", 40)
 
     # Party Vote
     party_vote = {SPD: 250, Union: 550, Grune: 150, Linke: 40, AFD: 90}
@@ -83,13 +84,10 @@ def test_mmp():
         "afd1",
     ].sort()
 
-    mmp_winners = mmp(party_vote, parties, 10, constituency_votes)
+    mmp_election = MMP("test mmp", party_vote, parties, 10, constituency_votes)
+    mmp_winners = mmp_election.calculate_winners()
 
     assert mmp_winners == candidates_elected
 
 
-def create_list(party_slug, seats):
-    candidates = []
-    for i in range(1, seats + 1):
-        candidates.append(party_slug + str(i))
-    return candidates
+
