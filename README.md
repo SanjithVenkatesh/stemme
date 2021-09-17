@@ -5,6 +5,8 @@ Various python files looking at different voting methods from SVP to MMP to d'Ho
 Create objects for the d'Hondt method and be able to calculate the winners based on the seats inputed.
 For STV and MMP, you can get the actual candidates who will be elected (more important for MMP)
 
+Parties properly implemented for dHondt and partially for MMP. 
+
 ## TODO
 Create classes for STV and MMP and additional tests to take in CSV files as an input
 Get databases running as a way to track previous elections and votes
