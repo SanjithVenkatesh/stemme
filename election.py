@@ -1,6 +1,3 @@
-from abc import abstractmethod
-
-
 from abc import ABC, abstractmethod
 
 class Election(ABC):
