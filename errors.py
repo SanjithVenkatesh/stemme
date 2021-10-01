@@ -13,3 +13,7 @@ class InvalidCSVFileError(Error):
 class InvalidInputError(Error):
     """Raised when there is a badly formatted CSV file"""
     pass
+
+class InvalidKeyError(Error):
+    """Raised when key does not exist in a dictionary"""
+    pass
