@@ -28,7 +28,7 @@ def Greens():
 def Other():
     return Party(names=create_list('o', seats), party_name='Other', votes=20)
 
-def test_gallager_index(Liberal, Conservative, NDP, BQ, Greens, Other):
+def test_calculate_gallager_index(Liberal, Conservative, NDP, BQ, Greens, Other):
     party_stats = {Liberal: (184, 3947), Conservative: (99, 3189), NDP: (44, 1971), BQ: (10, 466), Greens: (1, 345), Other: (0, 82)}
 
-    assert Election.gallagher_index(party_stats=party_stats) == 12.02
+    assert Election.calculate_gallagher_index(party_stats=party_stats) == 12.02

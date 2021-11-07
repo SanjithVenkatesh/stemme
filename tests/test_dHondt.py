@@ -28,7 +28,6 @@ def parties(A, B, C, D):
 
 def test_dHondt_with_list_candidates(parties):
     dh = dHondt(name="dh", seats=8, input=parties)
-    print("dh votes: " , dh.votes)
     winning_candidates = dh.calculate_winners(candidates=True)
     print(winning_candidates)
 
@@ -52,6 +51,13 @@ def test_throw_invalidcsvfileerror():
     party_votes = "dHondt_csv/invalid_party_votes.csv"
 
     with pytest.raises(InvalidCSVFileError):
-        dh = dHondt(name="dh", seats=8, input=party_votes)
+        _ = dHondt(name="dh", seats=8, input=party_votes)
+
+
+def test_dHondt_gallagher_index(parties):
+    dh = dHondt(name="dh", seats=8, input=parties)
+    _ = dh.calculate_winners(party_seats=True)
+    
+    assert dh.gallagher_index() == 7.93
 
     
