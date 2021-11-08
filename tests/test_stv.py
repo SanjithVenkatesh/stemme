@@ -111,6 +111,7 @@ def test_stv(candA1, candB1, candC1, candD1, candE1, candA2, candB2, candC2, can
 
     assert elected.sort() == [candE1, candA1, candD1].sort()
     assert stv.party_seats == {C: 1, D: 2, A: 2, E: 1}
+    assert stv.gallagher_index() == 5.7
 
 
 

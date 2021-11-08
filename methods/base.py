@@ -12,6 +12,9 @@ class Candidate:
     def __repr__(self):
         return self.name
 
+    def __lt__(self, other):
+        return self.name < other.name
+
 
 class Party:
     def __init__(self, names: Optional[List[str]], party_name: str, votes: int):
@@ -32,7 +35,7 @@ class Party:
 
     def remove_candidate(self, c: Candidate) -> None:
         self.party_members.remove(c.name)
-    
+
     def pop_candidate(self):
         return self.party_members.pop(0)
 
@@ -41,21 +44,24 @@ class Party:
             return self.party_members[rank]
         else:
             return None
-    
+
     def party_str(self) -> str:
         return self.party_name
-    
+
     def __str__(self) -> str:
         return self.party_str()
-    
+
     def __repr__(self) -> str:
         return self.party_str()
-    
+
     def __hash__(self):
         return hash((self.party_name, self.party_votes))
-    
+
     def __eq__(self, other):
-        return (self.party_name, self.party_votes) == (other.party_name, other.party_votes)
+        return (self.party_name, self.party_votes) == (
+            other.party_name,
+            other.party_votes,
+        )
 
 
 def create_list(party_slug, seats):
