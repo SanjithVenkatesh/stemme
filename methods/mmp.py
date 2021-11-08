@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from .base import Party, Candidate
 import math
 from election import Election
@@ -18,12 +18,24 @@ class MMP(Election):
         self.parties = parties
         self.seats = seats
         self.constituency_votes = constituency_votes
+        self.party_seats = {x: 0 for x in self.parties}
 
     def add_vote(self):
         pass
 
     def load_votes(self):
         self.votes = self.party_vote
+
+    # Calculate the Gallager Index for the election
+    # Transform the election results and call upon the Election.calculate_gallagher_index function
+    def gallager_index(self):
+        party_stats = {party: (0, 0) for party in self.parties}
+        for party, party_vote in self.votes:
+            party_stats[party][1] = party_vote
+        for party, party_seats in self.votes:
+            party_stats[party][0] = party_seats
+
+        return Election.calculate_gallagher_index(party_stats)
 
     def calculate_winners(self):
         winners: List[str] = []
@@ -47,6 +59,7 @@ class MMP(Election):
         ]
 
         for party in highest_remainders:
+            self.parties[party] += 1
             seats_awarded[party] += 1
 
         # Determine elected candidates, see what parties they are a part of

@@ -88,6 +88,3 @@ def test_mmp():
     mmp_winners = mmp_election.calculate_winners()
 
     assert mmp_winners == candidates_elected
-
-
-

@@ -17,6 +17,7 @@ class dHondt(Election):
         self.votes = dict()
         self.input = input
         self.seats = seats
+        self.party_seats = {x: 0 for x in self.input}
         self.load_votes()
 
     # Arg is a new party with their party vote
@@ -35,7 +36,7 @@ class dHondt(Election):
             self.load_votes_file()
         else:
             raise InvalidInputError
-    
+
     # Read all information from the list of Party objects
     def load_votes_list(self):
         for party in self.input:
@@ -44,23 +45,34 @@ class dHondt(Election):
             except PartyInElectionError:
                 pass
 
+    def gallagher_index(self):
+        party_stats = {party: [0, 0] for party in self.input}
+        for party, seats in self.party_seats.items():
+            party_stats[party][1] = seats
+        for party, votes in self.votes.items():
+            party_stats[party][0] = votes
+
+        return Election.calculate_gallagher_index(party_stats)
+
     # Read all of the votes from the Excel sheet
     # Ideally, the party is in the first column, the votes in the second column
     # Returns nothing, simply calls the add_vote function
     def load_votes_file(self):
         vote_df = pd.read_csv(self.input)
-        
+
         columns = vote_df.columns
         if "Party" not in columns or "Votes" not in columns:
             raise InvalidCSVFileError
-        
+
         # Create Party vote dictionary
-        self.party_votes = pd.Series(vote_df.Votes.values,index=vote_df.Party).to_dict()
-        
+        self.party_votes = pd.Series(
+            vote_df.Votes.values, index=vote_df.Party
+        ).to_dict()
+
         # Get the party candidates
         column_headers: List[str] = vote_df
         for ch in column_headers:
-            if ch not in ['Party', 'Votes']:
+            if ch not in ["Party", "Votes"]:
                 candidate_names: List[str] = []
                 for candidate in vote_df[ch].iteritems():
                     candidate_names.append(candidate)
@@ -72,7 +84,8 @@ class dHondt(Election):
                     # TODO: Implement logging system and add error message to queue
                     pass
 
-
+    # Calculate the winners of the election and set the winners variable
+    # Winners variable will be used to calculate Gallagher's Index
     def calculate_winners(self, candidates=False, party_seats=False):
         # Do a deep copy of the votes into a new variable to track the weight of each party
         votesTemp = copy.deepcopy(self.votes)
@@ -83,11 +96,11 @@ class dHondt(Election):
         # Calculate what the new weight of the party that won that seat
         for _ in range(0, self.seats):
             highestParty: Party = max(votesTemp.items(), key=operator.itemgetter(1))[0]
-            there = highestParty in partySeats
             partySeats[highestParty] += 1
             candidates_elected.append(highestParty.pop_candidate())
             votesTemp[highestParty] = int(
                 self.votes[highestParty] / (1 + partySeats[highestParty])
             )
 
+        self.party_seats = partySeats
         return candidates_elected if candidates and not party_seats else partySeats
