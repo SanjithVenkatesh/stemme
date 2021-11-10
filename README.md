@@ -1,15 +1,15 @@
 # Stemme
-Various python files looking at different voting methods from SVP to MMP to d'Hondt
+A python library for running different elections using the dHondt, MMP, and STV voting methods. 
 
 ## Current Abilities
-Create objects for the d'Hondt method and be able to calculate the winners based on the seats inputed.
-For STV and MMP, you can get the actual candidates who will be elected (more important for MMP)
+Be able to create an dHondt, STV, or MMP election object and use the methods defined to run an election.
 
-Parties properly implemented for dHondt and partially for MMP. 
+Sample pytest files are also available to show examples on how they are to be used.
+
+The Gallagher's Index has also been coded in to show how fair an election is.
 
 ## TODO
-Create classes for STV and MMP and additional tests to take in CSV files as an input
-Get databases running as a way to track previous elections and votes
+Work on creating plots for each of the election types, showing how the methods work. Looking into matplotlib for animations.
 
 ## Backburner
 Start looking into Tensorflow as a way of predicting future votes for all three methods
