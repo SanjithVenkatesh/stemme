@@ -69,7 +69,7 @@ def test_mmp():
         afd_candidates[4]: 15,
     }  # Grune winner
 
-    constituency_votes = [berlin, saxony, bavaria, frankfurt, baden]
+    constituency_votes = {"berlin": berlin, "saxony": saxony, "bavaria": bavaria, "frankfurt": frankfurt, "baden": baden}
 
     candidates_elected = [
         "spd1",

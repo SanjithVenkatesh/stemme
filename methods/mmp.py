@@ -1,4 +1,5 @@
 from typing import List, Dict, Tuple
+from errors import InvalidConstituencyError, InvalidInputError
 from .base import Party, Candidate
 import math
 from election import Election
@@ -11,24 +12,29 @@ class MMP(Election):
         party_vote: Dict[Party, int],
         parties: List[str],
         seats: int,
-        constituency_votes,
+        constituency_votes: Dict[str, Dict[Candidate, int]],
     ):
         super().__init__(name=name)
         self.votes = party_vote
         self.parties = parties
         self.seats = seats
-        self.constituency_votes = constituency_votes
+        self.constituency_votes: Dict[str, Dict[Candidate, int]] = constituency_votes
         self.party_seats = {x: 0 for x in self.parties}
 
-    def add_vote(self):
-        pass
+    def add_vote(self, party_vote: Party, const_vote: Candidate, constituency):
+        if constituency not in self.constituency_votes.keys():
+            self.constituency_votes[constituency] = {const_vote: 0}
+        if party_vote not in self.votes:
+            self.votes[party_vote] = 0
+        self.constituency_votes[constituency][const_vote] += 1
+        self.votes[party_vote] += 1
 
     def load_votes(self):
-        self.votes = self.party_vote
+        pass
 
     # Calculate the Gallager Index for the election
     # Transform the election results and call upon the Election.calculate_gallagher_index function
-    def gallager_index(self):
+    def gallagher_index(self):
         party_stats = {party: (0, 0) for party in self.parties}
         for party, party_vote in self.votes:
             party_stats[party][1] = party_vote
@@ -54,17 +60,18 @@ class MMP(Election):
 
         seats_awarded_so_far = self.sum_values(seats_awarded)
         remaining_seats = self.seats - seats_awarded_so_far
-        highest_remainders = sorted(remainder, key=remainder.get, reverse=True)[
+        highest_remainders: List[Party] = sorted(remainder, key=remainder.get, reverse=True)[
             :remaining_seats
         ]
 
+        print(type(highest_remainders))
         for party in highest_remainders:
-            self.parties[party] += 1
+            self.party_seats[party] += 1
             seats_awarded[party] += 1
 
         # Determine elected candidates, see what parties they are a part of
         con_party_winners: Dict[Party, int] = {x: 0 for x in self.parties}
-        for const_vote in self.constituency_votes:
+        for const_vote in self.constituency_votes.values():
             winner: Candidate = self.constituency_winner(const_vote)
             winners.append(winner.name)
             winner.party.remove_candidate(winner)
