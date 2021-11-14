@@ -131,8 +131,12 @@ class STV(Election):
     def calculate_transfer_votes(self, secondPrefVotes, originalVotes, surplusVotes):
         return math.floor((secondPrefVotes / originalVotes) * surplusVotes)
 
-    def add_vote(self):
-        pass
+    # Add a new vote to the constituency
+    # Need to verify that the constituency already exists
+    def add_vote(self, vote: List[Candidate], constituency: str):
+        if constituency not in self.votes.keys():
+            raise InvalidConstituencyError
+        self.votes[constituency].append(vote)
 
     def load_votes(self):
         pass
