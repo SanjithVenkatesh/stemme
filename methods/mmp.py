@@ -3,6 +3,7 @@ from errors import InvalidConstituencyError, InvalidInputError
 from .base import Party, Candidate
 import math
 from election import Election
+import matplotlib.pyplot as plt
 
 
 class MMP(Election):
@@ -64,16 +65,15 @@ class MMP(Election):
             :remaining_seats
         ]
 
-        print(type(highest_remainders))
         for party in highest_remainders:
-            self.party_seats[party] += 1
             seats_awarded[party] += 1
 
         # Determine elected candidates, see what parties they are a part of
         con_party_winners: Dict[Party, int] = {x: 0 for x in self.parties}
         for const_vote in self.constituency_votes.values():
             winner: Candidate = self.constituency_winner(const_vote)
-            winners.append(winner.name)
+            winners.append(winner)
+            self.party_seats[winner.party] += 1
             winner.party.remove_candidate(winner)
             con_party_winners[winner.party] += 1
 
@@ -82,6 +82,7 @@ class MMP(Election):
             remaining_winners: int = seats_awarded[party] - con_party_winners[party]
             for i in range(0, remaining_winners):
                 winners.append(party.generate_candidate_by_rank(i))
+                self.party_seats[party] += 1
 
         return winners.sort()
 
@@ -92,3 +93,23 @@ class MMP(Election):
     def constituency_winner(self, con: Dict[Candidate, int]) -> str:
         winner = sorted(con, key=con.get, reverse=True)[:1]
         return winner[0]
+    
+    # Plot out the results of the chart
+    def plot_seats_results(self, emphasis: Party = None):
+        party_names = []
+        emphasis_vals = []
+        party_colors = []
+        for party in self.party_seats.keys():
+            party_names.append(party.to_str())
+            emphasis_vals.append(0.1 if party == emphasis else 0)
+            party_colors.append(party.party_color)
+
+        seats = self.party_seats.values()
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(seats, labels=party_names, autopct='%1.1f%%', startangle=90, explode=emphasis_vals, colors=party_colors)
+        ax1.axis('equal')
+        plt.title("Pie Chart of Seats Won by Party")
+
+        plt.show()
+

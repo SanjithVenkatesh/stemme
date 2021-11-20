@@ -17,15 +17,17 @@ class Candidate:
 
 
 class Party:
-    def __init__(self, names: Optional[List[str]], party_name: str, votes: int):
+    def __init__(self, names: Optional[List[Candidate]], party_name: str, votes: int, color: str):
         self.party_members = names
         self.party_name = party_name
         self.party_votes = votes
+        self.party_color = color
 
     def generate_candidates(self) -> List[Candidate]:
         candidates: List[Candidate] = []
         for member in self.party_members:
             candidates.append(Candidate(member, self))
+        self.party_members = candidates
         return candidates
 
     def generate_candidate(self, candidate_name) -> Candidate:
@@ -34,7 +36,7 @@ class Party:
         return Candidate(candidate_name, self.party_name)
 
     def remove_candidate(self, c: Candidate) -> None:
-        self.party_members.remove(c.name)
+        self.party_members.remove(c)
 
     def pop_candidate(self):
         return self.party_members.pop(0)
@@ -62,6 +64,9 @@ class Party:
             other.party_name,
             other.party_votes,
         )
+    
+    def to_str(self):
+        return self.party_str()
 
 
 def create_list(party_slug, seats):

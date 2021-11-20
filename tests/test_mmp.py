@@ -13,11 +13,11 @@ def test_mmp():
     afd_list = create_list("afd", seats)
     linke_list = create_list("linke", seats)
 
-    SPD = Party(spd_list, "SPD", 250)
-    Grune = Party(grune_list, "Grune", 150)
-    Union = Party(union_list, "Union", 550)
-    AFD = Party(afd_list, "AFD", 90)
-    Linke = Party(linke_list, "Linke", 40)
+    SPD = Party(spd_list, "SPD", 250, "#eb4034")
+    Grune = Party(grune_list, "Grune", 150, "#258528")
+    Union = Party(union_list, "Union", 550, "#090a0a")
+    AFD = Party(afd_list, "AFD", 90, "#13c8d1")
+    Linke = Party(linke_list, "Linke", 40, "#cb13d1")
 
     # Party Vote
     party_vote = {SPD: 250, Union: 550, Grune: 150, Linke: 40, AFD: 90}
@@ -86,5 +86,7 @@ def test_mmp():
 
     mmp_election = MMP("test mmp", party_vote, parties, 10, constituency_votes)
     mmp_winners = mmp_election.calculate_winners()
+
+    mmp_election.plot_seats_results(emphasis=Grune)
 
     assert mmp_winners == candidates_elected
