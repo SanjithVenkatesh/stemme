@@ -14,6 +14,7 @@ def A():
 def candA1(A: Party):
     return Candidate("A1", A)
 
+
 @pytest.fixture
 def candA2(A: Party):
     return Candidate("A2", A)
@@ -28,9 +29,11 @@ def B():
 def candB1(B: Party):
     return Candidate("B1", B)
 
+
 @pytest.fixture
 def candB2(B: Party):
     return Candidate("B2", B)
+
 
 @pytest.fixture
 def C():
@@ -40,6 +43,7 @@ def C():
 @pytest.fixture
 def candC1(C: Party):
     return Candidate("C1", C)
+
 
 @pytest.fixture
 def candC2(C: Party):
@@ -55,6 +59,7 @@ def D():
 def candD1(D: Party):
     return Candidate("D1", D)
 
+
 @pytest.fixture
 def candD2(D: Party):
     return Candidate("D2", D)
@@ -69,6 +74,7 @@ def E():
 def candE1(E: Party):
     return Candidate("E1", E)
 
+
 @pytest.fixture
 def candE2(E: Party):
     return Candidate("E2", E)
@@ -79,7 +85,23 @@ def parties(A, B, C, D):
     return [A, B, C, D]
 
 
-def test_stv(candA1, candB1, candC1, candD1, candE1, candA2, candB2, candC2, candD2, candE2, A, B, C, D, E):
+def test_stv(
+    candA1,
+    candB1,
+    candC1,
+    candD1,
+    candE1,
+    candA2,
+    candB2,
+    candC2,
+    candD2,
+    candE2,
+    A,
+    B,
+    C,
+    D,
+    E,
+):
     candidates1 = [candA1, candB1, candC1, candD1, candE1]
     candidates2 = [candA2, candB2, candC2, candD2, candE2]
     const1_vote_types = {
@@ -112,7 +134,6 @@ def test_stv(candA1, candB1, candC1, candD1, candE1, candA2, candB2, candC2, can
     assert elected.sort() == [candE1, candA1, candD1].sort()
     assert stv.party_seats == {C: 1, D: 2, A: 2, E: 1}
     assert stv.gallagher_index() == 5.7
-
 
 
 def generate_votes(vote_dict):

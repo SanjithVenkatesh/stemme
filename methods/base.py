@@ -17,7 +17,9 @@ class Candidate:
 
 
 class Party:
-    def __init__(self, names: Optional[List[Candidate]], party_name: str, votes: int, color: str):
+    def __init__(
+        self, names: Optional[List[Candidate]], party_name: str, votes: int, color: str
+    ):
         self.party_members = names
         self.party_name = party_name
         self.party_votes = votes
@@ -64,9 +66,15 @@ class Party:
             other.party_name,
             other.party_votes,
         )
-    
+
     def to_str(self):
         return self.party_str()
+
+class Poll:
+    pass
+
+class Pollster:
+    pass
 
 
 def create_list(party_slug, seats):

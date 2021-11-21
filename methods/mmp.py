@@ -61,9 +61,9 @@ class MMP(Election):
 
         seats_awarded_so_far = self.sum_values(seats_awarded)
         remaining_seats = self.seats - seats_awarded_so_far
-        highest_remainders: List[Party] = sorted(remainder, key=remainder.get, reverse=True)[
-            :remaining_seats
-        ]
+        highest_remainders: List[Party] = sorted(
+            remainder, key=remainder.get, reverse=True
+        )[:remaining_seats]
 
         for party in highest_remainders:
             seats_awarded[party] += 1
@@ -93,7 +93,7 @@ class MMP(Election):
     def constituency_winner(self, con: Dict[Candidate, int]) -> str:
         winner = sorted(con, key=con.get, reverse=True)[:1]
         return winner[0]
-    
+
     # Plot out the results of the chart
     def plot_seats_results(self, emphasis: Party = None):
         party_names = []
@@ -107,9 +107,15 @@ class MMP(Election):
         seats = self.party_seats.values()
 
         fig1, ax1 = plt.subplots()
-        ax1.pie(seats, labels=party_names, autopct='%1.1f%%', startangle=90, explode=emphasis_vals, colors=party_colors)
-        ax1.axis('equal')
+        ax1.pie(
+            seats,
+            labels=party_names,
+            autopct="%1.1f%%",
+            startangle=90,
+            explode=emphasis_vals,
+            colors=party_colors,
+        )
+        ax1.axis("equal")
         plt.title("Pie Chart of Seats Won by Party")
 
         plt.show()
-

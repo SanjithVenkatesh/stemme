@@ -27,6 +27,7 @@ class InvalidKeyError(Error):
 
     pass
 
+
 class InvalidConstituencyError(Error):
     """Raised when constituency does not exist"""
 

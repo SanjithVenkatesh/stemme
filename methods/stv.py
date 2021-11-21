@@ -22,7 +22,7 @@ class STV(Election):
         self.candidates = candidates
         self.debug = debug
         self.party_seats: Dict[Party, int] = dict()
-    
+
     # Calculates the winners in all constituencies
     # Does not return anything, sets values in self.party_seats
     def calculate_winners(self):
@@ -32,18 +32,24 @@ class STV(Election):
         for const_name, const_votes in self.votes.items():
             const_candidates = self.candidates[const_name]
             const_seats = self.seats[const_name]
-            const_winners: List[Candidate] = self.__constituency_winner(const_votes, const_seats, const_candidates)
+            const_winners: List[Candidate] = self.__constituency_winner(
+                const_votes, const_seats, const_candidates
+            )
 
             for winner in const_winners:
                 if winner.party not in self.party_seats:
                     self.party_seats[winner.party] = 1
                 else:
                     self.party_seats[winner.party] += 1
-    
+
     # Calculates the winner of a given constituency
     # Checks if the votes exist for particular constituency, throws exception if votes do not exist
     def constituency_winners(self, constituency: str) -> List[Candidate]:
-        if constituency not in self.votes or constituency not in self.candidates or constituency not in self.seats:
+        if (
+            constituency not in self.votes
+            or constituency not in self.candidates
+            or constituency not in self.seats
+        ):
             raise InvalidConstituencyError
         const_votes = self.votes[constituency]
         const_candidates = self.candidates[constituency]
@@ -51,8 +57,9 @@ class STV(Election):
 
         return self.__constituency_winner(const_votes, const_seats, const_candidates)
 
-
-    def __constituency_winner(self, votes, seats, candidates, debug=False) -> List[Candidate]:
+    def __constituency_winner(
+        self, votes, seats, candidates, debug=False
+    ) -> List[Candidate]:
         # votes is a list of lists where each of the list is the order of preference for each voter,
         # seats is an int representing the number of seats to fill
         # candidates is a list of all of the candidates standing for the election
@@ -114,9 +121,7 @@ class STV(Election):
                 return self.countFinalPrefVote(
                     elected_candidates, seats, preferential_votes, debug=debug
                 )
-            newVars = self.redistribute_votes(
-                roundCount, toRedistribute, candidates
-            )
+            newVars = self.redistribute_votes(roundCount, toRedistribute, candidates)
             votes = self.turnVotesIntoLists(newVars[0])
             candidates = newVars[1]
             if debug:
@@ -291,5 +296,5 @@ class STV(Election):
             if party not in self.party_seats:
                 self.party_seats[party] = 0
             party_stats[party] = (self.party_seats[party], party_votes[party])
-        
+
         return Election.calculate_gallagher_index(party_stats)
