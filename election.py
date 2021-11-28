@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod, abstractstaticmethod
-from methods.base import Party
-from typing import Dict, Tuple
+from methods.base import Party, Poll
+from typing import Dict, Tuple, List
 from errors import InvalidKeyError
 
 
 class Election(ABC):
     def __init__(self, name: str = ""):
         self.name = name
+        self.polls: List[Poll] = []
 
     @abstractmethod
     def calculate_winners(self):
@@ -25,6 +26,11 @@ class Election(ABC):
     # The implementation of the function should end up calling the calculate_gallagher_index static method
     @abstractmethod
     def gallagher_index(self):
+        pass
+
+    # Method for predicting the election based on the polls given as well as previous elections
+    @abstractmethod
+    def predict_winners(self):
         pass
 
     # Calculate the Gallagher index for the election

@@ -1,5 +1,7 @@
 from typing import List, Dict, Optional
 
+from numpy import datetime64, double
+
 
 class Candidate:
     def __init__(self, name: str, party):
@@ -70,11 +72,38 @@ class Party:
     def to_str(self):
         return self.party_str()
 
-class Poll:
-    pass
-
 class Pollster:
-    pass
+    def __init__(self, name: str):
+        self.name = name
+        self.polls: List[Poll] = []
+    
+    def __repr__(self):
+        return self.to_str()
+    
+    def __str__(self):
+        return self.to_str()
+    
+    def to_str(self):
+        return self.name
+
+class Poll:
+    def __init__(self, pollster: Pollster, stats: Dict[Party, double], date: datetime64):
+        self.pollster: Pollster = pollster
+        self.stats: Dict[Party, double] = stats
+        self.date: datetime64 = date
+    
+    def __repr__(self):
+        return self.to_str()
+    
+    def __str__(self):
+        return self.to_str()
+
+    def to_str(self):
+        to_print: str = "{"
+        for party, percentage in self.stats.items():
+            to_print += party + " : " + str(percentage) + ","
+        to_print = to_print[:-1] + "}"
+        return to_print
 
 
 def create_list(party_slug, seats):
