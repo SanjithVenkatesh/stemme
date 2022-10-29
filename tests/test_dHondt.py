@@ -47,7 +47,7 @@ def test_dHondt_with_dict_party_seats(parties, A, B, C, D):
 
 
 def test_dHondt_with_csv(A, B, C, D):
-    party_votes = "dHondt_csv/party_votes.csv"
+    party_votes = "./tests/dHondt_csv/party_votes.csv"
     dh = dHondt(name="dh", seats=8, input=party_votes)
     party_seats = dh.calculate_winners()
 
@@ -55,7 +55,7 @@ def test_dHondt_with_csv(A, B, C, D):
 
 
 def test_throw_invalidcsvfileerror():
-    party_votes = "dHondt_csv/invalid_party_votes.csv"
+    party_votes = "./tests/dHondt_csv/invalid_party_votes.csv"
 
     with pytest.raises(InvalidCSVFileError):
         _ = dHondt(name="dh", seats=8, input=party_votes)

@@ -20,7 +20,7 @@ class Candidate:
 
 class Party:
     def __init__(
-        self, names: Optional[List[Candidate]], party_name: str, votes: int, color: str
+        self, names: Optional[List[Candidate]], party_name: str, votes: int, color: str = None
     ):
         self.party_members = names
         self.party_name = party_name
