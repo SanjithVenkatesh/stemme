@@ -29,9 +29,9 @@ class Election(ABC):
         pass
 
     # Method for predicting the election based on the polls given as well as previous elections
-    @abstractmethod
-    def predict_winners(self):
-        pass
+    # @abstractmethod
+    # def predict_winners(self):
+    #     pass
 
     # Calculate the Gallagher index for the election
     # party_stats is a Dictionary where key is a Party, and value is a tuple where first value is num seats and second value is num votes
