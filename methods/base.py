@@ -20,7 +20,11 @@ class Candidate:
 
 class Party:
     def __init__(
-        self, names: Optional[List[Candidate]], party_name: str, votes: int, color: str = None
+        self,
+        names: Optional[List[Candidate]],
+        party_name: str,
+        votes: int,
+        color: str = None,
     ):
         self.party_members = names
         self.party_name = party_name
@@ -72,29 +76,33 @@ class Party:
     def to_str(self):
         return self.party_str()
 
+
 class Pollster:
     def __init__(self, name: str):
         self.name = name
         self.polls: List[Poll] = []
-    
+
     def __repr__(self):
         return self.to_str()
-    
+
     def __str__(self):
         return self.to_str()
-    
+
     def to_str(self):
         return self.name
 
+
 class Poll:
-    def __init__(self, pollster: Pollster, stats: Dict[Party, double], date: datetime64):
+    def __init__(
+        self, pollster: Pollster, stats: Dict[Party, double], date: datetime64
+    ):
         self.pollster: Pollster = pollster
         self.stats: Dict[Party, double] = stats
         self.date: datetime64 = date
-    
+
     def __repr__(self):
         return self.to_str()
-    
+
     def __str__(self):
         return self.to_str()
 

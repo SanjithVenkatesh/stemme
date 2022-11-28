@@ -10,21 +10,21 @@ Last Modified: October 28, 2022
 from setuptools import setup, find_packages
 
 
-with open('README.rst') as f:
+with open("README.rst") as f:
     readme = f.read()
 
-with open('LICENSE') as f:
+with open("LICENSE") as f:
     license = f.read()
 
 
 setup(
-    name='stemme',
-    version='0.1.0',
-    description='Various voting methods',
+    name="stemme",
+    version="0.1.0",
+    description="Various voting methods",
     long_description=readme,
-    author='Sanjith Venkatesh',
-    author_email='sanjithv@vivaldi.net',
-    url='https://github.com/SanjithVenkatesh/stemme',
+    author="Sanjith Venkatesh",
+    author_email="sanjithv@vivaldi.net",
+    url="https://github.com/SanjithVenkatesh/stemme",
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=("tests", "docs")),
 )
